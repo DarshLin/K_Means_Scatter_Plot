@@ -69,7 +69,6 @@ class k_means:
             self.centroids[i] = data[point]
         self.classes = self.classification(data, self.centroids)
 
-        optimized = False
         # new centroids run until optimized is true
         counter = 0
         for p in range(self.max_runs):
