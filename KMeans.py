@@ -76,9 +76,9 @@ class k_means:
         for p in range(self.max_runs):
             counter += 1
             previous_centroids = copy.deepcopy(new_centroids)
+            # reclassify
             for c in range(0, len(new_centroids)):
                 new_centroids[c] = self.find_average(new_classes[c])
-            # reclassify
             new_classes.clear()
             new_classes = self.classification(data, new_centroids)
             original = []
@@ -124,13 +124,12 @@ def main():
         data[i][1] = length[i]
         data[i][2] = width[i]
 
-    print("Number of iterations: ")
-    km = k_means(5)
-    km.cluster(data)
-
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
+    print("Number of iterations: ")
+    km = k_means(4)
+    km.cluster(data)
     # so far can only do up to 8 unless I dynamically update the colors which could take a lot of time
     colors =["r", "g", "c", "b", "k", "y", "m", '#800080', 'w']
     counter = 0
