@@ -73,7 +73,7 @@ class k_means:
         new_classes = copy.deepcopy(self.classes)
         new_centroids = copy.deepcopy(self.centroids)
         counter = 0
-        for p in range(self.k):
+        for p in range(self.max_runs-1):
             counter += 1
             previous_centroids = copy.deepcopy(new_centroids)
             for c in range(len(self.centroids)):
@@ -104,12 +104,6 @@ class k_means:
             # get out of loop if tolerance is hit
             if max_difference <= self.tolerance:
                 break
-        # count = 0
-        # for points in new_classes[0]:
-        #     count += 1
-        #     print("count: ", count)
-        #     print(points)
-        # print(print(new_centroids[0]))
 
 def main():
     file = open('seeds_dataset.txt', 'r')
@@ -149,8 +143,7 @@ def main():
     for classification in km.classes:
         counter +=1
         color = colors[classification]
-        print("Group ", counter, ": ", " || points: "
-              ,len(km.classes[counter-1]))
+        print("Group ", counter, "- points: ", len(km.classes[counter-1]), " || centroid: ", km.centroids[counter-1])
         points = 0
         for features in km.classes[classification]:
             ax.scatter(features[0], features[1], features[2], s=10, c=color, marker='o')
