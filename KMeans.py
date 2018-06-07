@@ -102,6 +102,8 @@ class k_means:
             previous_centroids.clear()
             # get out of loop if tolerance is hit
             if max_difference <= self.tolerance:
+                self.classes = new_classes
+                self.centroids = new_centroids
                 break
         print(counter)
 
