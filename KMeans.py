@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 class k_means:
-    def __init__(self, k=3, tolerance=0.05, max_runs = 100):
+    def __init__(self, k=3, tolerance=0.00001, max_runs = 100):
         self.k = k;
         self.tolerance = tolerance
         self.max_runs = max_runs
@@ -73,10 +73,10 @@ class k_means:
         new_classes = copy.deepcopy(self.classes)
         new_centroids = copy.deepcopy(self.centroids)
         counter = 0
-        for p in range(self.max_runs-1):
+        for p in range(self.max_runs):
             counter += 1
             previous_centroids = copy.deepcopy(new_centroids)
-            for c in range(len(self.centroids)):
+            for c in range(0, len(new_centroids)):
                 new_centroids[c] = self.find_average(new_classes[c])
             # reclassify
             new_classes.clear()
@@ -100,10 +100,10 @@ class k_means:
                     max_difference = abs(current[g] - original[g])
 
             previous_centroids.clear()
-
             # get out of loop if tolerance is hit
             if max_difference <= self.tolerance:
                 break
+        print(counter)
 
 def main():
     file = open('seeds_dataset.txt', 'r')
@@ -124,14 +124,15 @@ def main():
         data[i][1] = length[i]
         data[i][2] = width[i]
 
-    km = k_means(4)
+    print("Number of iterations: ")
+    km = k_means(5)
     km.cluster(data)
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
     # so far can only do up to 8 unless I dynamically update the colors which could take a lot of time
-    colors =["r", "g", "c", "b", "k", "y", "m", '#800080']
+    colors =["r", "g", "c", "b", "k", "y", "m", '#800080', 'w']
     counter = 0
 
     for centroid in km.centroids:
