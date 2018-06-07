@@ -130,7 +130,7 @@ def main():
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    # so far can only do up to 5 unless I dynamically update the colors which could take a lot of time
+    # so far can only do up to 8 unless I dynamically update the colors which could take a lot of time
     colors =["r", "g", "c", "b", "k", "y", "m", '#800080']
     counter = 0
 
@@ -139,9 +139,9 @@ def main():
         counter += 1
 
     # reset counter to group everything
-    counter  = 0
+    counter = 0
     for classification in km.classes:
-        counter +=1
+        counter += 1
         color = colors[classification]
         print("Group ", counter, "- points: ", len(km.classes[counter-1]), " || centroid: ", km.centroids[counter-1])
         points = 0
