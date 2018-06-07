@@ -4,9 +4,8 @@ import copy
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
-
 class k_means:
-    def __init__(self, k=4, tolerance=0.05, max_runs = 100):
+    def __init__(self, k=3, tolerance=0.05, max_runs = 100):
         self.k = k;
         self.tolerance = tolerance
         self.max_runs = max_runs
@@ -24,6 +23,7 @@ class k_means:
 
     def classification(self, data, centroids):
         classes = {}
+        classes.clear()
         for i in range(self.k):
             # choose one of your points as centroid
             classes[i] = []
@@ -35,7 +35,7 @@ class k_means:
                 if distance < minimum:
                     minimum = distance
                     index = c
-                classes[index].append(f)
+            classes[index].append(f)
         return classes
 
     def find_average(self, data):
@@ -70,37 +70,46 @@ class k_means:
         self.classes = self.classification(data, self.centroids)
 
         # new centroids run until optimized is true
+        new_classes = copy.deepcopy(self.classes)
+        new_centroids = copy.deepcopy(self.centroids)
         counter = 0
-        for p in range(self.max_runs):
+        for p in range(self.k):
             counter += 1
-            previous_centroids = copy.deepcopy(self.centroids)
+            previous_centroids = copy.deepcopy(new_centroids)
             for c in range(len(self.centroids)):
-                self.centroids[c] = self.find_average(self.classes[c])
-
+                new_centroids[c] = self.find_average(new_classes[c])
             # reclassify
-            self.classes = self.classification(data, self.centroids)
+            new_classes.clear()
+            new_classes = self.classification(data, new_centroids)
             original = []
             current = []
             difference = []
-            for i in range(len(self.centroids[0])):
+            for i in range(len(new_centroids[0])):
                 original.append(0)
                 current.append(0)
                 difference.append(0)
 
             for a in range(len(original)):
-                for b in range(len(self.centroids)):
+                for b in range(len(new_centroids)):
                     original[a] += previous_centroids[b][a]
-                    current[a] += self.centroids[b][a]
+                    current[a] += new_centroids[b][a]
 
             max_difference = abs(current[0] - original[0])
             for g in range(len(current)):
                 if abs(current[g] - original[g]) > max_difference:
                     max_difference = abs(current[g] - original[g])
 
+            previous_centroids.clear()
+
             # get out of loop if tolerance is hit
             if max_difference <= self.tolerance:
                 break
-
+        # count = 0
+        # for points in new_classes[0]:
+        #     count += 1
+        #     print("count: ", count)
+        #     print(points)
+        # print(print(new_centroids[0]))
 
 def main():
     file = open('seeds_dataset.txt', 'r')
@@ -121,7 +130,7 @@ def main():
         data[i][1] = length[i]
         data[i][2] = width[i]
 
-    km = k_means(8)
+    km = k_means(4)
     km.cluster(data)
 
     fig = plt.figure()
@@ -132,19 +141,19 @@ def main():
     counter = 0
 
     for centroid in km.centroids:
-        ax.scatter(centroid[0], centroid[1], centroid[2], s=150, c=colors[counter], marker='x')
+        ax.scatter(centroid[0], centroid[1], centroid[2], s=500, c=colors[counter], marker='X')
         counter += 1
 
     # reset counter to group everything
-    counter = 0
+    counter  = 0
     for classification in km.classes:
         counter +=1
         color = colors[classification]
-        print("Group ", counter, ": ")
+        print("Group ", counter, ": ", " || points: "
+              ,len(km.classes[counter-1]))
+        points = 0
         for features in km.classes[classification]:
-            print(features)
-            ax.scatter(features[0], features[1], features[2], s = 50, c=color, marker='o')
-
+            ax.scatter(features[0], features[1], features[2], s=10, c=color, marker='o')
     plt.show()
 
 
